@@ -1,15 +1,19 @@
-CREATE TABLE country_tbl (
-  country_id INTEGER PRIMARY KEY AUTOINCREMENT,
-  country_name VARCHAR(50) UNIQUE NOT NULL,
-  country_code VARCHAR(2) UNIQUE NOT NULL,
-  currency VARCHAR(3) NOT NULL
+CREATE or replace TABLE country_tbl (
+  country_name VARCHAR(100),
+  country_code VARCHAR(2),
+  currency VARCHAR(50)
 );
 
-INSERT INTO country_tbl (country_name, country_code, currency) VALUES
+INSERT INTO country_tbl (country_name, country_code, currency) 
+VALUES 
   ('United States', 'US', 'USD'),
   ('Canada', 'CA', 'CAD'),
-  ('Mexico', 'MX', 'MXN'),
-  ('United Arab Emirates', 'AE', 'AED'),
-  ('India', 'IN', 'INR'),
+  ('United Kingdom', 'UK', 'GBP'),
+  ('Australia', 'AU', 'AUD'),
   ('Japan', 'JP', 'JPY'),
-  ('Australia', 'AU', 'AUD');
+  ('Switzerland', 'CH', 'CHF'),
+  ('Germany', 'DE', 'EUR'),
+  ('Brazil', 'BR', 'BRL'),
+  ('India', 'IN', 'INR'),
+  ('China', 'CN', 'CNY');
+
