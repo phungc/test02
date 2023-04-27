@@ -1,47 +1,25 @@
-CREATE OR REPLACE TABLE my_table (
-    country_name VARCHAR(50),
-    country_code VARCHAR(3),
-    currency VARCHAR(3),
-    my_year_month VARCHAR(6),
-    industry VARCHAR(20),
-    alpha_col VARCHAR(10),
-    string_col VARCHAR(7),
-    digit_col NUMBER(10),
-    float_col FLOAT
+CREATE TABLE employee_country_industry (
+  employee_name VARCHAR(7),
+  role VARCHAR(20),
+  country VARCHAR(50),
+  industry VARCHAR(20)
 );
 
-INSERT INTO my_table (
-    country_name,
-    country_code,
-    currency,
-    my_year_month,
-    industry,
-    alpha_col,
-    string_col,
-    digit_col,
-    float_col
-)
+INSERT INTO employee_country_industry (employee_name, role, country, industry)
+;
 SELECT 
-    country_name,
-    country_code,
-    currency,
-    CONCAT(year, '-', LPAD(month, 2, '0')) AS my_year_month,
-    industry,
-    RPAD(LOWER(REPLACE(TO_HEX(RANDOM()), '0', '')), 10, 'a') AS alpha_col,
-    CONCAT(CHAR(FLOOR(RANDOM() * 26) + 65), CHAR(FLOOR(RANDOM() * 26) + 65), LPAD(FLOOR(RANDOM() * 100000), 5, '0')) AS string_col,
-    FLOOR(RANDOM() * 10000000000) AS digit_col,
-    1000000 + (RANDOM() * 99900000) AS float_col
-FROM (
-    SELECT 
-        country_name,
-        country_code,
-        currency,
-        2021 + FLOOR(RANDOM() * 2) AS year,
-        1 + FLOOR(RANDOM() * 5) AS month,
-        CASE FLOOR(RANDOM() * 2)
-            WHEN 0 THEN 'Energy'
-            ELSE 'Technology'
-        END AS industry
-    FROM country_tbl
-    QUALIFY ROW_NUMBER() OVER (ORDER BY RANDOM()) <= 100
-);
+  e.employee_name,
+  e.role,
+  c.country_name,
+  CASE uniform(0, 4, random())
+    WHEN 0 THEN 'Technology'
+    WHEN 1 THEN 'Finance'
+    WHEN 2 THEN 'Healthcare'
+    WHEN 3 THEN 'Manufacturing'
+    ELSE 'Retail'
+  END
+FROM 
+  employee_tbl e,
+  country_tbl c
+ORDER BY RANDom()
+LIMIT 10;
