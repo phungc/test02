@@ -5,7 +5,7 @@ CREATE OR REPLACE TABLE synthetic_data (
     year_month VARCHAR(6),
     industry VARCHAR(50),
     alpha_col VARCHAR(10),
-    string_col VARCHAR(7),
+    string_col VARCHAR(10),
     digits_col NUMBER(10),
     float_col FLOAT
 );
@@ -37,10 +37,13 @@ FROM (
         SEQ4() AS rand_num,
         SEQ4() % 2 + 2021 AS year,
         LPAD(SEQ4() % 12 + 1, 2, '0') AS month,
-        'Industry ' || SEQ4() % 10 AS industry,
+        CASE SEQ4() % 2 WHEN 0 THEN 'Energy' ELSE 'Technology' END AS industry,
         RPAD(CHAR(SEQ4() % 26 + 65), 10, ' ') AS alpha_col,
-        CHAR(SEQ4() % 26 + 65) || CHAR(SEQ4() % 26 + 65) || 
-            RPAD(SEQ4() % 100000, 5, '0') AS string_col,
+        CONCAT(
+            CHAR(SEQ4() % 26 + 65),
+            CHAR(SEQ4() % 26 + 65),
+            RPAD(SEQ4() % 100000, 5, '0')
+        ) AS string_col,
         SEQ4() % 1000000000 AS digits_col,
         1000000 + (SEQ4() % 90000000) AS float_col,
         country_name,
@@ -49,19 +52,30 @@ FROM (
         year_month
     FROM TABLE(GENERATOR(ROWCOUNT=>100000))
     CROSS JOIN (
-        SELECT 
-            'United States' AS country_name,
-            'USA' AS country_code,
-            'USD' AS country_currency,
-            CONCAT(year, month) AS year_month
+        SELECT *
         FROM (
-            SELECT DISTINCT SEQ4() % 2 + 2021 AS year
-            FROM TABLE(GENERATOR(ROWCOUNT=>100))
-        )
-        CROSS JOIN (
-            SELECT DISTINCT LPAD(SEQ4() % 12 + 1, 2, '0') AS month
-            FROM TABLE(GENERATOR(ROWCOUNT=>100))
-        )
-    ) t
+            VALUES 
+                ('United Arab Emirates', 'UAE', 'AED'),
+                ('India', 'IND', 'INR'),
+                ('Canada', 'CAN', 'CAD'),
+                ('United States', 'USA', 'USD'),
+                ('Germany', 'DEU', 'EUR'),
+                ('Japan', 'JPN', 'JPY'),
+                ('Australia', 'AUS', 'AUD')
+        ) AS countries (country_name, country_code, country_currency)
+    ) AS t
 )
-WHERE row_num <= 100;
+WHERE 
+    row_num <= 100
+    AND string_col IN (
+        'ABC12345',
+        'DEF67890',
+        'GHI12345',
+        'JKL67890',
+        'MNO12345',
+        'PQR67890',
+        'STU12345',
+        'VWX67890',
+        'YZA12345',
+        'BCD67890'
+    );
