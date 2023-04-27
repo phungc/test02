@@ -1,7 +1,7 @@
 CREATE OR REPLACE TABLE country_tbl (
   country_name VARCHAR(50),
   country_code CHAR(2),
-  CONSTRAINT pk_country_tbl PRIMARY KEY (country_name, country_code)
+  CONSTRAINT pk_country_tbl PRIMARY KEY (country_code)
 );
 
 INSERT INTO country_tbl (
