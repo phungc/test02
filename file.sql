@@ -1,7 +1,6 @@
 CREATE OR REPLACE TABLE country_tbl (
   country_name VARCHAR(50),
-  country_code CHAR(2),
-  CONSTRAINT pk_country_tbl PRIMARY KEY (country_code)
+  country_code CHAR(2) UNIQUE
 );
 
 INSERT INTO country_tbl (
@@ -9,7 +8,7 @@ INSERT INTO country_tbl (
 )
 SELECT 
   country_names.name AS country_name,
-  country_codes.code AS country_code
+  country_names.code AS country_code
 FROM 
   TABLE(GENERATOR(ROWCOUNT => 5)) AS d
 CROSS JOIN (
@@ -32,20 +31,4 @@ CROSS JOIN (
   SELECT DISTINCT
     'Germany' AS name,
     'DE' AS code
-) AS country_names
-CROSS JOIN (
-  SELECT DISTINCT
-    'US' AS code
-  UNION ALL
-  SELECT DISTINCT
-    'CA' AS code
-  UNION ALL
-  SELECT DISTINCT
-    'UK' AS code
-  UNION ALL
-  SELECT DISTINCT
-    'AU' AS code
-  UNION ALL
-  SELECT DISTINCT
-    'DE' AS code
-) AS country_codes;
+) AS country_names;
