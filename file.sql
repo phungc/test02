@@ -14,39 +14,39 @@ SELECT
 FROM 
   TABLE(GENERATOR(ROWCOUNT => 100)) AS d
 CROSS JOIN (
-  SELECT 
+  SELECT DISTINCT
     'United States' AS name,
     'US' AS code
   UNION ALL
-  SELECT 
+  SELECT DISTINCT
     'Canada' AS name,
     'CA' AS code
   UNION ALL
-  SELECT 
+  SELECT DISTINCT
     'United Kingdom' AS name,
     'UK' AS code
   UNION ALL
-  SELECT 
+  SELECT DISTINCT
     'Australia' AS name,
     'AU' AS code
   UNION ALL
-  SELECT 
+  SELECT DISTINCT
     'Germany' AS name,
     'DE' AS code
 ) AS country_names
 CROSS JOIN (
-  SELECT 
+  SELECT DISTINCT
     'US' AS code
   UNION ALL
-  SELECT 
+  SELECT DISTINCT
     'CA' AS code
   UNION ALL
-  SELECT 
+  SELECT DISTINCT
     'UK' AS code
   UNION ALL
-  SELECT 
+  SELECT DISTINCT
     'AU' AS code
   UNION ALL
-  SELECT 
+  SELECT DISTINCT
     'DE' AS code
 ) AS country_codes;
