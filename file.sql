@@ -1,18 +1,17 @@
 CREATE OR REPLACE TABLE country_tbl (
-  country_id INTEGER,
   country_name VARCHAR(50),
-  country_code CHAR(2)
+  country_code CHAR(2),
+  CONSTRAINT pk_country_tbl PRIMARY KEY (country_name, country_code)
 );
 
 INSERT INTO country_tbl (
-  country_id, country_name, country_code
+  country_name, country_code
 )
 SELECT 
-  ROW_NUMBER() OVER (ORDER BY SEQ4()) AS country_id,
   country_names.name AS country_name,
   country_codes.code AS country_code
 FROM 
-  TABLE(GENERATOR(ROWCOUNT => 100)) AS d
+  TABLE(GENERATOR(ROWCOUNT => 5)) AS d
 CROSS JOIN (
   SELECT DISTINCT
     'United States' AS name,
