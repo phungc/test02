@@ -1,2 +1,35 @@
 select   concat(SEQ4() % 2 + 2021, LPAD(SEQ4() % 12 + 1, 2, '0')) as year_month
 from TABLE(GENERATOR(ROWCOUNT => 100));
+
+CREATE TABLE industry_tbl (
+  industry_name VARCHAR(20)
+);
+
+INSERT INTO industry_tbl (industry_name)
+VALUES 
+  ('Technology'),
+  ('Finance'),
+  ('Healthcare'),
+  ('Manufacturing'),
+  ('Retail'),
+  ('Transportation'),
+  ('Hospitality'),
+  ('Education'),
+  ('Energy'),
+  ('Media');
+CREATE TABLE bank_tbl (
+  bank_name VARCHAR(50)
+);
+
+INSERT INTO bank_tbl (bank_name)
+VALUES 
+  ('Bank of America'),
+  ('JPMorgan Chase'),
+  ('Wells Fargo'),
+  ('Citigroup'),
+  ('Goldman Sachs'),
+  ('Morgan Stanley'),
+  ('HSBC'),
+  ('Barclays'),
+  ('UBS'),
+  ('Deutsche Bank');
