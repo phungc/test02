@@ -4,7 +4,7 @@ SELECT
   unique_month_tbl.month,
   country_tbl.country_name,
   country_tbl.country_code,
-  CASE MOD(unique_month_tbl.seqnum, 3)
+  CASE MOD(unique_month_tbl.seqnum + country_tbl.seqnum, 3)
     WHEN 0 THEN 'Finance'
     WHEN 1 THEN 'Technology'
     ELSE 'Retail'
@@ -14,5 +14,7 @@ FROM
 CROSS JOIN
   (SELECT country_name, country_code, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS seqnum FROM country_tbl) country_tbl
 WHERE
-  unique_month_tbl.seqnum = 1
-  AND country_tbl.seqnum = 1;
+  unique_month_tbl.seqnum <= 24
+  AND country_tbl.seqnum <= 5
+LIMIT
+  100;
