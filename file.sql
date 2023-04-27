@@ -1,34 +1,15 @@
-CREATE OR REPLACE TABLE country_tbl (
-  country_name VARCHAR(50),
-  country_code CHAR(2) UNIQUE
+CREATE TABLE country_tbl (
+  country_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  country_name VARCHAR(50) UNIQUE NOT NULL,
+  country_code VARCHAR(2) UNIQUE NOT NULL,
+  currency VARCHAR(3) NOT NULL
 );
 
-INSERT INTO country_tbl (
-  country_name, country_code
-)
-SELECT 
-  country_names.name AS country_name,
-  country_names.code AS country_code
-FROM 
-  TABLE(GENERATOR(ROWCOUNT => 5)) AS d
-CROSS JOIN (
-  SELECT DISTINCT
-    'United States' AS name,
-    'US' AS code
-  UNION ALL
-  SELECT DISTINCT
-    'Canada' AS name,
-    'CA' AS code
-  UNION ALL
-  SELECT DISTINCT
-    'United Kingdom' AS name,
-    'UK' AS code
-  UNION ALL
-  SELECT DISTINCT
-    'Australia' AS name,
-    'AU' AS code
-  UNION ALL
-  SELECT DISTINCT
-    'Germany' AS name,
-    'DE' AS code
-) AS country_names;
+INSERT INTO country_tbl (country_name, country_code, currency) VALUES
+  ('United States', 'US', 'USD'),
+  ('Canada', 'CA', 'CAD'),
+  ('Mexico', 'MX', 'MXN'),
+  ('United Arab Emirates', 'AE', 'AED'),
+  ('India', 'IN', 'INR'),
+  ('Japan', 'JP', 'JPY'),
+  ('Australia', 'AU', 'AUD');
