@@ -1,18 +1,2 @@
-CREATE TABLE unique_month_tbl (
-    id INT AUTOINCREMENT PRIMARY KEY,
-    month CHAR(6) UNIQUE
-);
-
-INSERT INTO unique_month_tbl (month)
-SELECT CONCAT(
-    CASE
-        WHEN MOD(seqnum, 2) = 0 THEN '2022'
-        ELSE '2021'
-    END,
-    LPAD(MOD(seqnum, 12) + 1, 2, '0')
-) AS month
-FROM (
-    SELECT ROW_NUMBER() OVER (ORDER BY seq4()) AS seqnum
-    FROM TABLE(GENERATOR(ROWCOUNT => 10000))
-)
-WHERE seqnum <= 24;
+select   concat(SEQ4() % 2 + 2021, LPAD(SEQ4() % 12 + 1, 2, '0')) as year_month
+from TABLE(GENERATOR(ROWCOUNT => 100));
