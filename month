@@ -1,0 +1,11 @@
+ALTER TABLE country_tbl
+ADD month CHAR(6);
+
+UPDATE country_tbl
+SET month = CONCAT(
+    CASE
+        WHEN MOD(ROW_NUMBER() OVER (ORDER BY country_code), 2) = 0 THEN '2022'
+        ELSE '2021'
+    END,
+    LPAD(MOD(ROW_NUMBER() OVER (ORDER BY country_code), 12) + 1, 2, '0')
+);
