@@ -1,23 +1,15 @@
-CREATE TABLE random_industry_tbl AS
-SELECT
-  CONCAT(country_tbl.country_name, '_', unique_month_tbl.month) AS id,
-  unique_month_tbl.month,
-  country_tbl.country_name,
-  country_tbl.country_code,
-  CASE MOD(unique_month_tbl.seqnum + country_tbl.seqnum, 3)
-    WHEN 0 THEN 'Finance'
-    WHEN 1 THEN 'Technology'
-    ELSE 'Retail'
-  END AS industry,
-  RANDOMSTRING(10) AS random_string_10,
-  CONCAT(RANDOMSTRING(2), RANDOMSTRING(5, '0123456789')) AS random_string_2_5,
-  RANDOM() * 10000000000 AS random_number_10
-FROM
-  (SELECT month, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS seqnum FROM unique_month_tbl) unique_month_tbl
-CROSS JOIN
-  (SELECT country_name, country_code, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS seqnum FROM country_tbl) country_tbl
-WHERE
-  unique_month_tbl.seqnum <= 24
-  AND country_tbl.seqnum <= 5
-LIMIT
-  100;
+CREATE TABLE random_data_tbl AS
+SELECT 
+  ROW_NUMBER() OVER() AS row_id, 
+  country_tbl.country_name, 
+  country_tbl.country_code, 
+  country_tbl.currency, 
+  unique_month_tbl.month, 
+  'industry_' || FLOOR(RAND()*(10-1+1)+1)::VARCHAR AS industry_name,
+  SUBSTR(TO_HEX(RANDOM()), 1, 10) AS random_str_10_chars,
+  CONCAT(SUBSTR(TO_HEX(RANDOM()), 1, 2), FLOOR(RAND()*(99999-10000+1)+10000)::VARCHAR) AS random_str_2_chars_5_nums,
+  FLOOR(RAND()*(9999999999-1000000000+1)+1000000000)::VARCHAR AS random_str_10_nums
+FROM country_tbl
+CROSS JOIN unique_month_tbl
+QUALIFY ROW_NUMBER() OVER(PARTITION BY country_tbl.country_code, unique_month_tbl.month ORDER BY RANDOM()) = 1
+LIMIT 100;
