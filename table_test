@@ -62,6 +62,6 @@ FROM (
             SELECT DISTINCT LPAD(SEQ4() % 12 + 1, 2, '0') AS month
             FROM TABLE(GENERATOR(ROWCOUNT=>100))
         )
-    )
+    ) t
 )
 WHERE row_num <= 100;
