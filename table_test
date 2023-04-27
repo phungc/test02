@@ -1,81 +1,33 @@
+-- Create table
 CREATE OR REPLACE TABLE synthetic_data (
-    country_name VARCHAR(50),
-    country_code VARCHAR(3),
-    country_currency VARCHAR(3),
-    year_month VARCHAR(6),
-    industry VARCHAR(50),
-    alpha_col VARCHAR(10),
-    string_col VARCHAR(10),
-    digits_col NUMBER(10),
-    float_col FLOAT
+  country_name VARCHAR(50),
+  country_code VARCHAR(3),
+  currency VARCHAR(3),
+  my_year_month VARCHAR(6),
+  industry VARCHAR(20),
+  alpha_col VARCHAR(10),
+  string_col VARCHAR(7),
+  digits_col NUMBER(10),
+  float_col FLOAT
 );
 
-INSERT INTO synthetic_data (
-    country_name, 
-    country_code, 
-    country_currency, 
-    year_month, 
-    industry, 
-    alpha_col, 
-    string_col, 
-    digits_col, 
-    float_col
-)
+-- Generate 100 rows of synthetic data
+INSERT INTO synthetic_data
 SELECT 
-    country_name, 
-    country_code, 
-    country_currency, 
-    year_month, 
-    industry, 
-    alpha_col, 
-    string_col, 
-    digits_col, 
-    float_col
-FROM (
-    SELECT 
-        ROW_NUMBER() OVER (ORDER BY SEQ4()) AS row_num,
-        SEQ4() AS rand_num,
-        SEQ4() % 2 + 2021 AS year,
-        LPAD(SEQ4() % 12 + 1, 2, '0') AS month,
-        CASE SEQ4() % 2 WHEN 0 THEN 'Energy' ELSE 'Technology' END AS industry,
-        RPAD(CHAR(SEQ4() % 26 + 65), 10, ' ') AS alpha_col,
-        CONCAT(
-            CHAR(SEQ4() % 26 + 65),
-            CHAR(SEQ4() % 26 + 65),
-            RPAD(SEQ4() % 100000, 5, '0')
-        ) AS string_col,
-        SEQ4() % 1000000000 AS digits_col,
-        1000000 + (SEQ4() % 90000000) AS float_col,
-        country_name,
-        country_code,
-        country_currency,
-        year_month
-    FROM TABLE(GENERATOR(ROWCOUNT=>100000))
-    CROSS JOIN (
-        SELECT *
-        FROM (
-            VALUES 
-                ('United Arab Emirates', 'UAE', 'AED'),
-                ('India', 'IND', 'INR'),
-                ('Canada', 'CAN', 'CAD'),
-                ('United States', 'USA', 'USD'),
-                ('Germany', 'DEU', 'EUR'),
-                ('Japan', 'JPN', 'JPY'),
-                ('Australia', 'AUS', 'AUD')
-        ) AS countries (country_name, country_code, country_currency)
-    ) AS t
-)
-WHERE 
-    row_num <= 100
-    AND string_col IN (
-        'ABC12345',
-        'DEF67890',
-        'GHI12345',
-        'JKL67890',
-        'MNO12345',
-        'PQR67890',
-        'STU12345',
-        'VWX67890',
-        'YZA12345',
-        'BCD67890'
-    );
+  country_name, 
+  country_code, 
+  currency, 
+  TO_CHAR(DATEADD('month', SEQ4(), '2021-01-01'), 'YYYYMM') AS my_year_month, 
+  CASE SEQ4() % 5
+    WHEN 0 THEN 'energy'
+    WHEN 1 THEN 'technology'
+    WHEN 2 THEN 'finance'
+    WHEN 3 THEN 'healthcare'
+    WHEN 4 THEN 'entertainment'
+  END AS industry, 
+  RANDOM_STRING(10, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') AS alpha_col, 
+  CONCAT(RANDOM_STRING(2, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'), RANDOM_STRING(5, '0123456789')) AS string_col, 
+  FLOOR(RANDOM() * 10000000000) AS digits_col, 
+  1000000 + (RANDOM() * 99900000) AS float_col
+FROM country_tbl
+CROSS JOIN TABLE(GENERATOR(ROWCOUNT => 100));
