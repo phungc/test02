@@ -1,4 +1,4 @@
-CREATE TABLE industry_tbl AS
+CREATE TABLE random_industry_tbl AS
 SELECT
   CONCAT(country_tbl.country_name, '_', unique_month_tbl.month) AS id,
   unique_month_tbl.month,
@@ -10,6 +10,9 @@ SELECT
     ELSE 'Retail'
   END AS industry
 FROM
-  (SELECT ROW_NUMBER() OVER (ORDER BY seq4()) AS seqnum, month FROM unique_month_tbl) unique_month_tbl
+  (SELECT month, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS seqnum FROM unique_month_tbl) unique_month_tbl
 CROSS JOIN
-  (SELECT country_name, country_code FROM country_tbl) country_tbl;
+  (SELECT country_name, country_code, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS seqnum FROM country_tbl) country_tbl
+WHERE
+  unique_month_tbl.seqnum = 1
+  AND country_tbl.seqnum = 1;
