@@ -8,7 +8,10 @@ SELECT
     WHEN 0 THEN 'Finance'
     WHEN 1 THEN 'Technology'
     ELSE 'Retail'
-  END AS industry
+  END AS industry,
+  RANDOMSTRING(10) AS random_string_10,
+  CONCAT(RANDOMSTRING(2), RANDOMSTRING(5, '0123456789')) AS random_string_2_5,
+  RANDOM() * 10000000000 AS random_number_10
 FROM
   (SELECT month, ROW_NUMBER() OVER (ORDER BY RANDOM()) AS seqnum FROM unique_month_tbl) unique_month_tbl
 CROSS JOIN
