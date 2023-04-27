@@ -1,15 +1,67 @@
-CREATE TABLE random_data_tbl AS
+CREATE OR REPLACE TABLE synthetic_data (
+    country_name VARCHAR(50),
+    country_code VARCHAR(3),
+    country_currency VARCHAR(3),
+    year_month VARCHAR(6),
+    industry VARCHAR(50),
+    alpha_col VARCHAR(10),
+    string_col VARCHAR(7),
+    digits_col NUMBER(10),
+    float_col FLOAT
+);
+
+INSERT INTO synthetic_data (
+    country_name, 
+    country_code, 
+    country_currency, 
+    year_month, 
+    industry, 
+    alpha_col, 
+    string_col, 
+    digits_col, 
+    float_col
+)
 SELECT 
-  ROW_NUMBER() OVER() AS row_id, 
-  country_tbl.country_name, 
-  country_tbl.country_code, 
-  country_tbl.currency, 
-  unique_month_tbl.month, 
-  'industry_' || FLOOR(RAND()*(10-1+1)+1)::VARCHAR AS industry_name,
-  SUBSTR(TO_HEX(RANDOM()), 1, 10) AS random_str_10_chars,
-  CONCAT(SUBSTR(TO_HEX(RANDOM()), 1, 2), FLOOR(RAND()*(99999-10000+1)+10000)::VARCHAR) AS random_str_2_chars_5_nums,
-  FLOOR(RAND()*(9999999999-1000000000+1)+1000000000)::VARCHAR AS random_str_10_nums
-FROM country_tbl
-CROSS JOIN unique_month_tbl
-QUALIFY ROW_NUMBER() OVER(PARTITION BY country_tbl.country_code, unique_month_tbl.month ORDER BY RANDOM()) = 1
-LIMIT 100;
+    country_name, 
+    country_code, 
+    country_currency, 
+    year_month, 
+    industry, 
+    alpha_col, 
+    string_col, 
+    digits_col, 
+    float_col
+FROM (
+    SELECT 
+        ROW_NUMBER() OVER (ORDER BY SEQ4()) AS row_num,
+        SEQ4() AS rand_num,
+        SEQ4() % 2 + 2021 AS year,
+        LPAD(SEQ4() % 12 + 1, 2, '0') AS month,
+        'Industry ' || SEQ4() % 10 AS industry,
+        RPAD(CHAR(SEQ4() % 26 + 65), 10, ' ') AS alpha_col,
+        CHAR(SEQ4() % 26 + 65) || CHAR(SEQ4() % 26 + 65) || 
+            RPAD(SEQ4() % 100000, 5, '0') AS string_col,
+        SEQ4() % 1000000000 AS digits_col,
+        1000000 + (SEQ4() % 90000000) AS float_col,
+        country_name,
+        country_code,
+        country_currency,
+        year_month
+    FROM TABLE(GENERATOR(ROWCOUNT=>100000))
+    CROSS JOIN (
+        SELECT 
+            'United States' AS country_name,
+            'USA' AS country_code,
+            'USD' AS country_currency,
+            CONCAT(year, month) AS year_month
+        FROM (
+            SELECT DISTINCT SEQ4() % 2 + 2021 AS year
+            FROM TABLE(GENERATOR(ROWCOUNT=>100))
+        )
+        CROSS JOIN (
+            SELECT DISTINCT LPAD(SEQ4() % 12 + 1, 2, '0') AS month
+            FROM TABLE(GENERATOR(ROWCOUNT=>100))
+        )
+    )
+)
+WHERE row_num <= 100;
