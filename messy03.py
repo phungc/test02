@@ -37,3 +37,17 @@ def send_to_kafka_avro(rdd):
 
     # Close the Kafka producer connection
     producer.close()
+
+
+from kafka import KafkaProducer, KafkaConsumer
+
+# Test producer
+producer = KafkaProducer(bootstrap_servers=['localhost:9092'])
+producer.send('test_topic', b'Testing Kafka connection from Python')
+producer.flush()
+print('Message sent to Kafka')
+
+# Test consumer
+consumer = KafkaConsumer('test_topic', bootstrap_servers=['localhost:9092'])
+for message in consumer:
+    print(f"Received message: {message.value.decode('utf-8')}")
