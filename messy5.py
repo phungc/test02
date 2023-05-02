@@ -75,3 +75,9 @@ while True:
         else:
             print('Error while consuming messages: {}'.format(msg.error()))
        
+import json
+
+def rdd_to_json(rdd):
+    json_rdd = rdd.map(lambda row: row.asDict())
+    json_string = json.dumps(json_rdd.collect())
+    return json_string
