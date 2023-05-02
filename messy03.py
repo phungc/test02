@@ -51,3 +51,43 @@ print('Message sent to Kafka')
 consumer = KafkaConsumer('test_topic', bootstrap_servers=['localhost:9092'])
 for message in consumer:
     print(f"Received message: {message.value.decode('utf-8')}")
+
+
+from kafka import KafkaProducer
+import io
+import fastavro.schema
+import fastavro.io
+
+# Define the Avro schema for the messages
+avro_schema = {
+    'namespace': 'example.avro',
+    'type': 'record',
+    'name': 'Example',
+    'fields': [
+        {'name': 'field1', 'type': 'string'},
+        {'name': 'field2', 'type': 'int'},
+        {'name': 'field3', 'type': 'double'}
+    ]
+}
+
+def publish_to_kafka_avro(rdd):
+    # Create a Kafka producer
+    producer = KafkaProducer(bootstrap_servers=['localhost:9092'])
+
+    # Load the Avro schema
+    schema = fastavro.schema.parse(json.dumps(avro_schema))
+
+    # Serialize each row as Avro and publish to Kafka
+    for row in rdd.collect():
+        # Parse the row as a dictionary
+        data = json.loads(row)
+
+        # Serialize the data as Avro
+        buffer = io.BytesIO()
+        fastavro.io.Writer(buffer, schema, [data]).write()
+
+        # Publish the Avro-encoded message to Kafka
+        producer.send('example_topic', value=buffer.getvalue())
+
+    # Flush the producer to ensure that all messages are sent
+    producer.flush()
