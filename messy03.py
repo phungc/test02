@@ -91,3 +91,15 @@ def publish_to_kafka_avro(rdd):
 
     # Flush the producer to ensure that all messages are sent
     producer.flush()
+
+
+from pyspark.sql.avro import SchemaConverters
+
+# Load a DataFrame from a data source
+df = spark.read.format('csv').option('header', 'true').load('path/to/data.csv')
+
+# Convert the DataFrame schema to an Avro schema
+avro_schema = SchemaConverters.convertStructToAvro(df.schema)
+
+# Print the Avro schema
+print(avro_schema)
