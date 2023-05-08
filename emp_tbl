@@ -1,0 +1,31 @@
+CREATE TABLE employee_data (
+  employee VARCHAR(7) NOT NULL,
+  column2 BIGINT NOT NULL,
+  column3 BIGINT NOT NULL,
+  country VARCHAR(255) NOT NULL,
+  region VARCHAR(255) NOT NULL,
+  role VARCHAR(255) NOT NULL
+);
+
+INSERT INTO employee_data (employee, column2, column3, country, region, role)
+VALUES
+  ('EJ12345', 1234567890, 9876543210, 'United States', 'North America', 'Manager'),
+  ('FH67890', 2345678901, 8765432109, 'Canada', 'North America', 'Engineer'),
+  ('AI34567', 3456789012, 7654321098, 'Mexico', 'North America', 'Analyst'),
+  ('BV23456', 4567890123, 6543210987, 'France', 'Europe', 'Manager'),
+  ('OD45678', 5678901234, 5432109876, 'Germany', 'Europe', 'Engineer'),
+  ('CL67890', 6789012345, 4321098765, 'United Kingdom', 'Europe', 'Analyst'),
+  ('MQ89012', 7890123456, 3210987654, 'Spain', 'Europe', 'Manager'),
+  ('PA90123', 8901234567, 2109876543, 'Italy', 'Europe', 'Engineer'),
+  ('SN12345', 9012345678, 1098765432, 'China', 'Asia', 'Analyst'),
+  ('GO67890', 1234567890, 9876543210, 'Japan', 'Asia', 'Manager'),
+  ('JW34567', 2345678901, 8765432109, 'South Korea', 'Asia', 'Engineer'),
+  ('LZ23456', 3456789012, 7654321098, 'Australia', 'Australia', 'Analyst'),
+  ('YT45678', 4567890123, 6543210987, 'New Zealand', 'Australia', 'Manager'),
+  ('XV67890', 5678901234, 5432109876, 'Brazil', 'South America', 'Engineer'),
+  ('UK89012', 6789012345, 4321098765, 'Argentina', 'South America', 'Analyst'),
+  ('RB90123', 7890123456, 3210987654, 'Peru', 'South America', 'Manager'),
+  ('OP12345', 9012345678, 2109876543, 'South Africa', 'Africa', 'Engineer'),
+  ('TE67890', 1234567890, 9876543210, 'Egypt', 'Africa', 'Analyst'),
+  ('ZA34567', 2345678901, 8765432109, 'Nigeria', 'Africa', 'Manager'),
+  ('XC23456', 3456789012, 7654321098, 'India', 'Asia', 'Engineer');
